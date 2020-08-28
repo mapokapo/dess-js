@@ -8,7 +8,7 @@
 		"dev": "nodemon src/bot.js"
 	},
 	"keywords": [ "discord", "bot", "js", "discord.js", "essentials" ],
-	"author": "Bunny <leopetrovic11@gmail.com>",
+	"author": "ulla britta <leopetrovic11@gmail.com>",
 	"license": "MIT",
 	"dependencies": {
 		"discord.js": "^12.3.1",

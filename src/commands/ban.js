@@ -1,12 +1,16 @@
 const { CommandValidator } = require("../commandValidator");
 
-const kickOptions = {
-  token: "kick",
+const banOptions = {
+  token: "ban",
   args: [
     {
       name: "user",
       type: "string",
       required: true
+    },
+    {
+      name: "duration",
+      type: "integer"
     },
     {
       name: "reason",
@@ -31,7 +35,7 @@ function getUserFromMention(mention, message) {
 }
 
 module.exports = {
-  validator: new CommandValidator(kickOptions),
+  validator: new CommandValidator(banOptions),
   optValidator(args, message) {
     return new Promise((resolve, reject) => {
       const mentionsUser = ((/^<@!?\d+>$/.test(args[0]) && message.mentions.members.size !== 0));
@@ -43,8 +47,8 @@ module.exports = {
       }
 
       const user = message.guild.member(args[0].match(/\d+/)[0]);
-      if (!message.guild.member(args[0].match(/\d+/)[0]).kickable) {
-        return reject(`You cannot kick \`${user.user.username}\``);
+      if (!message.guild.member(args[0].match(/\d+/)[0]).bannable) {
+        return reject(`You cannot ban \`${user.user.username}\``);
       }
 
       resolve();
@@ -52,7 +56,8 @@ module.exports = {
   },
   execute(args, message) {
     const user = message.guild.member(args[0].match(/\d+/)[0]);
-    const reason = args.slice(1, args.length).map(str => {
+    const duration = args[1] || 0;
+    const reason = args.slice(2, args.length).map(str => {
       if (/^<@!?\d+>$/.test(str)) {
         const member = getUserFromMention(str, message);
         return member.user.tag;
@@ -63,9 +68,9 @@ module.exports = {
       } else {
         return str;
       }
-    }).join(" ") || "Kicked by admin";
-    user.kick(reason).then((guildMember) => {
-      message.channel.send(`**Kicked user \`${guildMember.user.username}\`, reason: \`${reason}\`**`);
+    }).join(" ") || "Banned by admin";
+    user.ban({ days: duration, reason }).then((guildMember) => {
+      message.channel.send(`**Banned user \`${guildMember.user.username}\` for ${duration} days, reason: \`${reason}\`**`);
     });
   }
 };
