@@ -1,4 +1,4 @@
-module.exports = [
+export default [
   {
     name: "kick",
     token: "!kick",
@@ -23,4 +23,4 @@ module.exports = [
     description: "Changes the prefix used to access Dess commands",
     usage: "!prefix !",
   },
-]
+];
